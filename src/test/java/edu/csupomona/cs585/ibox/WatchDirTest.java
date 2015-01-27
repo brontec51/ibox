@@ -1,38 +1,27 @@
 package edu.csupomona.cs585.ibox;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.WatchEvent;
 
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
-import org.mockito.Mockito;
 
-import com.google.api.client.http.FileContent;
-import com.google.api.services.drive.Drive;
-
-import edu.csupomona.cs585.ibox.sync.GoogleDriveFileSyncManager;
-
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class WatchDirTest {
 
-	private Drive mockDrive = mock(Drive.class, Mockito.RETURNS_DEEP_STUBS);
+	private WatchDir wd;
 
-	private GoogleDriveFileSyncManager g = new GoogleDriveFileSyncManager(
-			mockDrive);
+	private boolean flag;
+
+	public WatchDirTest() {
+		wd = mock(WatchDir.class);
+	}
 
 	@Test
-	public void test1AddFile() throws IOException {
+	public void testCast() {
 
-		java.io.File file = new java.io.File("/res-folder/.jpg");
+		flag = wd.cast(mock(WatchEvent.class)) instanceof WatchEvent;
 
-		// File body = new File();
-		// body.setTitle(file.getName());
-
-		// when(mockDrive.files().insert(new File(), mediaContent).execute());
-		g.addFile(file);
-
+		assertTrue("cast(WatchEvent<T>) has failed.", flag);
 	}
 }

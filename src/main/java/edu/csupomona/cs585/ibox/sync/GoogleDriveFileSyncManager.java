@@ -20,7 +20,6 @@ public class GoogleDriveFileSyncManager implements FileSyncManager {
 
 	@Override
 	public void addFile(java.io.File localFile) throws IOException {
-
 		// Insert a file
 		File body = new File();
 		body.setTitle(localFile.getName());
