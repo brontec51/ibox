@@ -9,10 +9,9 @@ import com.google.api.services.drive.Drive.Files.List;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 
-
 public class GoogleDriveFileSyncManager implements FileSyncManager {
 
-	//Google Drive service
+	// Google Drive service
 	public Drive service;
 
 	public GoogleDriveFileSyncManager(Drive service) {
@@ -21,7 +20,8 @@ public class GoogleDriveFileSyncManager implements FileSyncManager {
 
 	@Override
 	public void addFile(java.io.File localFile) throws IOException {
-		//Insert a file
+
+		// Insert a file
 		File body = new File();
 		body.setTitle(localFile.getName());
 		FileContent mediaContent = new FileContent("*/*", localFile);
@@ -38,7 +38,8 @@ public class GoogleDriveFileSyncManager implements FileSyncManager {
 			File body = new File();
 			body.setTitle(localFile.getName());
 			FileContent mediaContent = new FileContent("*/*", localFile);
-			File file = service.files().update(fileId, body, mediaContent).execute();
+			File file = service.files().update(fileId, body, mediaContent)
+					.execute();
 			System.out.println("File ID: " + file.getId());
 		}
 	}
@@ -57,7 +58,7 @@ public class GoogleDriveFileSyncManager implements FileSyncManager {
 		try {
 			List request = service.files().list();
 			FileList files = request.execute();
-			for(File file : files.getItems()) {
+			for (File file : files.getItems()) {
 				if (file.getTitle().equals(fileName)) {
 					return file.getId();
 				}
