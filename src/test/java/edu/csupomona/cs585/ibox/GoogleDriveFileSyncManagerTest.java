@@ -1,88 +1,62 @@
 package edu.csupomona.cs585.ibox;
 
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.isA;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.io.File;
+import java.io.IOException;
 
 import org.junit.Test;
+
+import com.google.api.client.http.AbstractInputStreamContent;
+import com.google.api.client.http.FileContent;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.Drive.Files;
+import com.google.api.services.drive.Drive.Files.Insert;
+import com.google.api.services.drive.model.File;
 
 import edu.csupomona.cs585.ibox.sync.GoogleDriveFileSyncManager;
 
 public class GoogleDriveFileSyncManagerTest {
 
-	private static final File file = new File("/res-folder/Desert.jpg");
-
 	private GoogleDriveFileSyncManager gdfsm;
 
-	private Exception exception;
+	Drive mDrive = mock(Drive.class);
+	Files mFiles = mock(Files.class);
+	// mock(Insert.class);
+	File file = new File();
+	java.io.File mFile = mock(java.io.File.class);
 
-	private boolean flag;
+	AbstractInputStreamContent fileContent = new FileContent("*/*", mFile);
 
-	public GoogleDriveFileSyncManagerTest() {
+	Insert mInsert = mock(Insert.class);
 
-		gdfsm = mock(GoogleDriveFileSyncManager.class);
+	public GoogleDriveFileSyncManagerTest() throws IOException {
+
+		gdfsm = new GoogleDriveFileSyncManager(mDrive);
+
+		when(mDrive.files()).thenReturn(mFiles);
+		when(mFiles.insert(file, fileContent)).thenReturn(mInsert);
+		// when(mInsert.execute()).thenReturn(file);
+
+		// File body = new File();
+		// body.setTitle(localFile.getName());
+		// FileContent mediaContent = new FileContent("*/*", localFile);
+		// service.files().insert(body, mediaContent).execute();
 	}
 
 	@Test
-	public void testAddFile() {
-
-		try {
-			gdfsm.addFile(file);
-
-			exception = null;
-
-			flag = true;
-		} catch (Exception e) {
-			exception = e;
-
-			flag = false;
-		}
-
-		assertTrue("addFile(File) has failed. " + exception, flag);
+	public void testAddFile() throws IOException {
+		gdfsm.addFile(mock(java.io.File.class));
 	}
 
 	@Test
 	public void testUpdateFile() {
-
-		try {
-			gdfsm.updateFile(file);
-
-			exception = null;
-
-			flag = true;
-		} catch (Exception e) {
-			exception = e;
-
-			flag = false;
-		}
-
-		assertTrue("updateFile(File) has failed. " + exception, flag);
 	}
 
 	@Test
 	public void testDeleteFile() {
 
-		try {
-			gdfsm.deleteFile(file);
-
-			exception = null;
-
-			flag = true;
-		} catch (Exception e) {
-			exception = e;
-
-			flag = false;
-		}
-
-		assertTrue("deleteFile(File) has failed. " + exception, flag);
 	}
 
-	@Test
-	public void testGetFileId() {
-
-		flag = gdfsm.getFileId(file.getName()) == null;
-
-		assertTrue("getFileId(String) has failed.", flag);
-	}
 }
