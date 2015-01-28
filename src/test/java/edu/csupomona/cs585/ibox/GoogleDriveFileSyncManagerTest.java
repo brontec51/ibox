@@ -21,32 +21,36 @@ public class GoogleDriveFileSyncManagerTest {
 
 	private GoogleDriveFileSyncManager gdfsm;
 
-	Drive mDrive = mock(Drive.class);
-	Files mFiles = mock(Files.class);
-	// mock(Insert.class);
-	File file = new File();
-	java.io.File mFile = mock(java.io.File.class);
-
-	AbstractInputStreamContent fileContent = new FileContent("*/*", mFile);
-
-	Insert mInsert = mock(Insert.class);
-
 	public GoogleDriveFileSyncManagerTest() throws IOException {
+
+		Drive mDrive = mock(Drive.class);
 
 		gdfsm = new GoogleDriveFileSyncManager(mDrive);
 
+		Files mFiles = mock(Files.class);
+
 		when(mDrive.files()).thenReturn(mFiles);
-		when(mFiles.insert(file, fileContent)).thenReturn(mInsert);
-		// when(mInsert.execute()).thenReturn(file);
+
+		Insert mInsert = mock(Insert.class);
+
+		File file = new File().setTitle(mock(java.io.File.class).getName());
+
+		AbstractInputStreamContent aisc = mock(AbstractInputStreamContent.class);
+
+		when(mFiles.insert(file, aisc)).thenReturn(mInsert);
+
+	}
+
+	@Test
+	public void testAddFile() throws IOException {
 
 		// File body = new File();
 		// body.setTitle(localFile.getName());
 		// FileContent mediaContent = new FileContent("*/*", localFile);
 		// service.files().insert(body, mediaContent).execute();
-	}
+		// File file = service.files().insert(body, mediaContent).execute();
+		// System.out.println("File ID: " + file.getId());
 
-	@Test
-	public void testAddFile() throws IOException {
 		gdfsm.addFile(mock(java.io.File.class));
 	}
 
