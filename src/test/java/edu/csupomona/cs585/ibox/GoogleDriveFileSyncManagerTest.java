@@ -40,10 +40,11 @@ public class GoogleDriveFileSyncManagerTest {
 	private FileList fileList = new FileList();
 	private java.util.List<File> itemList = new ArrayList<File>();
 
-	private GoogleDriveFileSyncManager gdfsm = new GoogleDriveFileSyncManager(
-			mDrive);
+	private GoogleDriveFileSyncManager gdfsm;
 
 	public GoogleDriveFileSyncManagerTest() throws IOException {
+
+		gdfsm = new GoogleDriveFileSyncManager(mDrive);
 
 		// initialization for testAddFile()
 		when(mDrive.files()).thenReturn(mFiles);

@@ -23,12 +23,7 @@ public class WatchDirTest {
 	}
 
 	@Test
-	public void testWatchDir() {
-
-	}
-
-	@Test
 	public void testProcessEvent() {
-		// wd.processEvents();
+		wd.processEvents();
 	}
 }
