@@ -1,29 +1,37 @@
 package edu.csupomona.cs585.ibox;
 
-import static org.mockito.Mockito.mock;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 
 import org.junit.Test;
 
-import edu.csupomona.cs585.ibox.sync.FileSyncManager;
-
 public class WatchDirTest {
-
-	private Path mPath = mock(Path.class);
-
-	private FileSyncManager mfsm = mock(FileSyncManager.class);
 
 	private WatchDir wd;
 
 	public WatchDirTest() throws IOException {
 
-		wd = new WatchDir(mPath, mfsm);
+		Path dir = Paths.get("res-folder/dir");
+
+		WatchService service = FileSystems.getDefault().newWatchService();
+
+		WatchKey key = dir.register(service, ENTRY_CREATE, ENTRY_DELETE,
+				ENTRY_MODIFY);
+
+		wd = new WatchDir(dir, new FileSyncManagerImp());
 	}
 
 	@Test
-	public void testProcessEvent() {
-		// wd.processEvents();
+	public void testProcessEvent() throws IOException {
+
+		wd.processEvents();
 	}
 }
