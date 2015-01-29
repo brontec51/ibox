@@ -1,6 +1,7 @@
 package edu.csupomona.cs585.ibox;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
@@ -72,5 +73,14 @@ public class IntegrationTest {
 				"C:/Users/Public/Pictures/Sample Pictures/Desert.jpg");
 
 		gdfsm.deleteFile(file);
+	}
+
+	@Test
+	public void testProcessEvent() throws IOException {
+
+		WatchDir watchDir = new WatchDir(Paths.get("res-folder/dir"), gdfsm);
+		System.out.println("dstart");
+		new WatchDirThread().start(watchDir);
+		System.out.println("end");
 	}
 }
