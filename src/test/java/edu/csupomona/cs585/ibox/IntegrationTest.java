@@ -6,6 +6,7 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
@@ -18,23 +19,19 @@ import edu.csupomona.cs585.ibox.sync.GoogleDriveFileSyncManager;
 
 public class IntegrationTest {
 
-	private Drive drive;
-
 	private GoogleDriveFileSyncManager gdfsm;
 
 	private WatchDir watchDir;
 
-	private java.io.File file;
+	private java.io.File dir;
 
 	public IntegrationTest() throws IOException, GeneralSecurityException {
 
-		drive = initGoogleDriveServices();
+		Drive drive = initGoogleDriveServices();
 
 		gdfsm = new GoogleDriveFileSyncManager(drive);
 
-		watchDir = new WatchDir(Paths.get("res-folder/dir"), gdfsm);
-
-		file = new java.io.File("res-folder/file/Chrysanthemum.jpg");
+		dir = new java.io.File("res-folder/dir");
 	}
 
 	private Drive initGoogleDriveServices() throws IOException,
@@ -63,25 +60,35 @@ public class IntegrationTest {
 	@Test
 	public void testProcessEvent() throws IOException, InterruptedException {
 
-		int time = 3;
+		java.io.File file = new java.io.File(dir.getAbsolutePath()
+				+ "/testFile");
+
+		for (int i = 0; i < dir.listFiles().length; i++)
+			if (file.getName().equals(dir.listFiles()[i].getName())) {
+				dir.listFiles()[i].delete();
+				break;
+			}
+
+		watchDir = new WatchDir(Paths.get(dir.getAbsolutePath()), gdfsm);
 
 		WatchDirThread wdThread = new WatchDirThread();
 
+		int time = 10;
+		int n1 = 0;
+		int n2 = 0;
+
 		wdThread.start();
-
 		TimeUnit.SECONDS.sleep(time);
 
-		gdfsm.addFile(file);
+		n1 = gdfsm.service.files().list().execute().getItems().size();
 
+		file.createNewFile();
 		TimeUnit.SECONDS.sleep(time);
 
-		gdfsm.updateFile(file);
+		n2 = gdfsm.service.files().list().execute().getItems().size();
+		Assert.assertTrue("Adding a file has failed.", n1 < n2);
 
-		TimeUnit.SECONDS.sleep(time);
-
-		gdfsm.deleteFile(file);
-
-		TimeUnit.SECONDS.sleep(time);
+		file.delete();
 	}
 
 	private class WatchDirThread extends Thread {
