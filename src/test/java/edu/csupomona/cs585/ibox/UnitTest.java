@@ -27,7 +27,7 @@ import com.google.api.services.drive.model.FileList;
 import edu.csupomona.cs585.ibox.sync.GoogleDriveFileSyncManager;
 
 @RunWith(MockitoJUnitRunner.class)
-public class GoogleDriveFileSyncManagerTest {
+public class UnitTest {
 
 	private Drive mDrive = mock(Drive.class);
 	private Files mFiles = mock(Files.class);
@@ -42,7 +42,7 @@ public class GoogleDriveFileSyncManagerTest {
 
 	private GoogleDriveFileSyncManager gdfsm;
 
-	public GoogleDriveFileSyncManagerTest() throws IOException {
+	public UnitTest() throws IOException {
 
 		gdfsm = new GoogleDriveFileSyncManager(mDrive);
 

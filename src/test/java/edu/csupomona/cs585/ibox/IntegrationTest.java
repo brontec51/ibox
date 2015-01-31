@@ -1,32 +1,53 @@
 package edu.csupomona.cs585.ibox;
 
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
+import org.springframework.boot.test.TestRestTemplate;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.http.FileContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.File;
 
 import edu.csupomona.cs585.ibox.sync.GoogleDriveFileSyncManager;
 
 public class IntegrationTest {
 
+	private Drive drive;
+
 	private GoogleDriveFileSyncManager gdfsm;
+
+	private WatchDir watchDir;
+
+	private java.io.File file;
 
 	public IntegrationTest() throws IOException, GeneralSecurityException {
 
-		Drive drive = initGoogleDriveServices();
+		drive = initGoogleDriveServices();
 
 		gdfsm = new GoogleDriveFileSyncManager(drive);
+
+		watchDir = new WatchDir(Paths.get("res-folder/dir"), gdfsm);
+
+		file = new java.io.File("res-folder/file/Chrysanthemum.jpg");
 	}
 
-	public Drive initGoogleDriveServices() throws IOException,
+	private Drive initGoogleDriveServices() throws IOException,
 			GeneralSecurityException {
 
 		NetHttpTransport httpTransport = new NetHttpTransport();
@@ -50,38 +71,38 @@ public class IntegrationTest {
 	}
 
 	@Test
-	public void testAddFile() throws IOException {
+	public void testProcessEvent() throws IOException, InterruptedException {
 
-		java.io.File file = new java.io.File(
-				"res-folder/file/Chrysanthemum.jpg");
+		int time = 3;
+
+		WatchDirThread wdThread = new WatchDirThread();
+
+		wdThread.start();
+
+		TimeUnit.SECONDS.sleep(time);
 
 		gdfsm.addFile(file);
-	}
 
-	@Test
-	public void testUpdateFile() throws IOException {
+		verify(gdfsm.service.files()
+				.insert(isA(File.class), isA(FileContent.class)).execute());
 
-		java.io.File file = new java.io.File(
-				"res-folder/file/Chrysanthemum.jpg");
+		TimeUnit.SECONDS.sleep(time);
 
 		gdfsm.updateFile(file);
-	}
 
-	@Test
-	public void testDeleteFile() throws IOException {
-
-		java.io.File file = new java.io.File(
-				"res-folder/file/Chrysanthemum.jpg");
+		TimeUnit.SECONDS.sleep(time);
 
 		gdfsm.deleteFile(file);
+
+		TimeUnit.SECONDS.sleep(time);
+
+		wdThread.destroy();
 	}
 
-	@Test
-	public void testProcessEvent() throws IOException {
+	private class WatchDirThread extends Thread {
 
-		WatchDir watchDir = new WatchDir(Paths.get("res-folder/dir"), gdfsm);
-		System.out.println("dstart");
-		//new WatchDirThread().start(watchDir);
-		System.out.println("end");
+		public void run() {
+			watchDir.processEvents();
+		}
 	}
 }
