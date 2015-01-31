@@ -33,26 +33,27 @@ public class IntegrationTest {
 
 		JacksonFactory jsonFactory = new JacksonFactory();
 
-		java.io.File file = new java.io.File("c:/My Project-a4cb44460030.p12");
+		java.io.File file = new java.io.File(
+				"res-folder/key/ibox-b2ea2d1821b6.p12");
 
 		GoogleCredential credential = new GoogleCredential.Builder()
 				.setTransport(httpTransport)
 				.setJsonFactory(jsonFactory)
 				.setServiceAccountId(
-						"120423487971-esd9uuitm2cssk78u75ovjhtoid10cop@developer.gserviceaccount.com")
+						"123212057414-r5a1gb704ar7i9ulhnsbsvqcl8lh1o6j@developer.gserviceaccount.com")
 				.setServiceAccountScopes(
 						Collections.singleton(DriveScopes.DRIVE))
 				.setServiceAccountPrivateKeyFromP12File(file).build();
 
 		return new Drive.Builder(httpTransport, jsonFactory, credential)
-				.setApplicationName("My Project").build();
+				.setApplicationName("ibox").build();
 	}
 
 	@Test
 	public void testAddFile() throws IOException {
 
 		java.io.File file = new java.io.File(
-				"C:/Users/Public/Pictures/Sample Pictures/Desert.jpg");
+				"res-folder/file/Chrysanthemum.jpg");
 
 		gdfsm.addFile(file);
 	}
@@ -61,7 +62,7 @@ public class IntegrationTest {
 	public void testUpdateFile() throws IOException {
 
 		java.io.File file = new java.io.File(
-				"C:/Users/Public/Pictures/Sample Pictures/Desert.jpg");
+				"res-folder/file/Chrysanthemum.jpg");
 
 		gdfsm.updateFile(file);
 	}
@@ -70,7 +71,7 @@ public class IntegrationTest {
 	public void testDeleteFile() throws IOException {
 
 		java.io.File file = new java.io.File(
-				"C:/Users/Public/Pictures/Sample Pictures/Desert.jpg");
+				"res-folder/file/Chrysanthemum.jpg");
 
 		gdfsm.deleteFile(file);
 	}
@@ -80,7 +81,7 @@ public class IntegrationTest {
 
 		WatchDir watchDir = new WatchDir(Paths.get("res-folder/dir"), gdfsm);
 		System.out.println("dstart");
-		new WatchDirThread().start(watchDir);
+		//new WatchDirThread().start(watchDir);
 		System.out.println("end");
 	}
 }
