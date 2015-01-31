@@ -1,28 +1,18 @@
 package edu.csupomona.cs585.ibox;
 
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.verify;
-
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
-import org.springframework.boot.test.TestRestTemplate;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.web.client.RestTemplate;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.FileContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.File;
 
 import edu.csupomona.cs585.ibox.sync.GoogleDriveFileSyncManager;
 
