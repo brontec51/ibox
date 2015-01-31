@@ -9,7 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -36,7 +35,7 @@ public class UnitTest {
 	private Update mUpdate = mock(Update.class);
 	private Delete mDelete = mock(Delete.class);
 
-	private java.io.File file = new java.io.File("test");
+	private java.io.File file = new java.io.File("testFile");
 	private FileList fileList = new FileList();
 	private java.util.List<File> itemList = new ArrayList<File>();
 
@@ -77,7 +76,7 @@ public class UnitTest {
 	@Test
 	public void testUpdateFile() throws IOException {
 
-		// test when updateFile() cannot find a file to update
+		// test when updateFile(java.io.File) cannot find a file to update
 		fileList.setItems(itemList);
 
 		gdfsm.updateFile(file);
@@ -85,7 +84,7 @@ public class UnitTest {
 		verify(mFiles).list();
 		verify(mList).execute();
 
-		// test when updateFile() successfully update a file
+		// test when updateFile(java.io.File) successfully update a file
 		itemList.add(new File().setTitle(file.getName()).setId("0"));
 
 		gdfsm.updateFile(file);
@@ -98,28 +97,23 @@ public class UnitTest {
 	@Test
 	public void testDeleteFile() throws IOException {
 
-		boolean flag = false;
-
-		// test when deleteFile() cannot find a file to delete
+		// test when deleteFile(java.io.File) cannot find a file to delete
 		fileList.setItems(itemList);
 
 		try {
 			gdfsm.deleteFile(file);
 		} catch (FileNotFoundException fnfe) {
-			flag = true;
 		}
 
 		verify(mFiles).list();
 		verify(mList).execute();
 
-		Assert.assertTrue("deleteFile() should not be able to delete a file.",
-				flag);
-
-		// test when deleteFile() successfully delete a file
-		itemList.add(new File().setTitle(file.getName()).setId("0"));
+		// test when deleteFile(java.io.File) successfully delete a file
+		itemList.add(new File().setTitle(file.getName()).setId("testId"));
 
 		gdfsm.deleteFile(file);
 
 		verify(mFiles).delete(isA(String.class));
+		verify(mDelete).execute();
 	}
 }
