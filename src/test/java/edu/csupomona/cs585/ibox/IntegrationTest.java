@@ -83,9 +83,6 @@ public class IntegrationTest {
 
 		gdfsm.addFile(file);
 
-		verify(gdfsm.service.files()
-				.insert(isA(File.class), isA(FileContent.class)).execute());
-
 		TimeUnit.SECONDS.sleep(time);
 
 		gdfsm.updateFile(file);
@@ -95,8 +92,6 @@ public class IntegrationTest {
 		gdfsm.deleteFile(file);
 
 		TimeUnit.SECONDS.sleep(time);
-
-		wdThread.destroy();
 	}
 
 	private class WatchDirThread extends Thread {
